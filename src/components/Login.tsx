@@ -1,7 +1,7 @@
 import React, { useState, useContext, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext'; // replace with the actual path
-
+import './Login.css';
 interface User {
   username: string;
   password: string;
@@ -21,36 +21,52 @@ const Login: React.FC = () => {
 
   const { setUser } = authContext;
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!username || !password) {
       alert('Please fill in all fields');
       return;
     }
     else {
-      // Here you would typically send a request to your backend to authenticate the user
-      // If the authentication is successful, you can set the user in the AuthContext
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: username, password }) // changed 'username' to 'name'
+      });
+
+      const data = await response.json();
+      console.log(data);
+      
       const user: User = { username, password }; // replace with the actual user object returned from your backend
       setUser(user);
       navigate('/dashboard');
     }
-    // handle the login logic here
+  };
+
+  const handleRegisterClick = () => {
+    navigate('/register');
   };
 
   return (
-    <div>
-      <h2>Login Page</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-        </label>
-        <label>
-          Password:
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </label>
-        <input type="submit" value="Log in" />
-      </form>
+    <div className='mainContainer'>
+      <div className='loginContainer'>
+        <h2>Login Page</h2>
+        <form className='' onSubmit={handleSubmit}>
+          <label className='inputContainer'>
+            Username:
+            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          </label>
+          <label className='inputContainer'>
+            Password:
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </label>
+          <input type="submit" value="Log in" />
+
+          <button onClick={handleRegisterClick}>Register</button>
+        </form>
+      </div>
     </div>
   );
 }
