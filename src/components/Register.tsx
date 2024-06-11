@@ -30,7 +30,7 @@ const Register: React.FC = () => {
       return;
     }
     else {
-      const response = await fetch('http://localhost:3001/register', {
+      const response = await fetch('http://localhost:8080/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
